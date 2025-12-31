@@ -1,4 +1,4 @@
-import { jest } from '@jest/globals';
+import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
 // Mock nanoid to avoid ESM issues
 jest.mock('nanoid', () => ({
