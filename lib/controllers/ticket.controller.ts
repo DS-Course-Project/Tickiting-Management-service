@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ticketService } from "../tickets";
 import { ticketEventProducers } from "../producer/ticket-events-producers";
+import { Ticket } from "../db/schema";
 
 export const ticketController = {
   createTicket: async (req: Request, res: Response) => {
@@ -33,13 +34,19 @@ export const ticketController = {
 
   listTickets: async (req: Request, res: Response) => {
     try {
+      const userRole = req.user?.role;
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       const status = req.query.status as string;
       const priority = req.query.priority as string;
       const userId = req.query.userId as string;
 
-      const tickets = await ticketService.listTickets(page, limit, { status, priority, userId });
+      let tickets: Ticket[] = [];
+      if (userRole?.toLowerCase() === "admin") {
+        tickets = await ticketService.listTickets(page, limit, { status, priority, userId });
+      } else {
+        tickets = await ticketService.listTickets(page, limit, { status, priority, userId: req.user?.id ?? "" });
+      }
       res.json(tickets);
     } catch (error) {
       res.status(500).json({ error: "Failed to list tickets" });

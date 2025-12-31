@@ -5,10 +5,17 @@ import { extractUser } from "./lib/middleware/rbac";
 import { getProducer } from "./lib/producer/kafka";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    methods: ["GET", "POST", "OPTIONS", "PATCH", "DELETE", "PUT"],
+  })
+);
+
 app.use(express.json()); // Support JSON bodies
 const port = process.env.PORT || 3002;
-
-app.use(cors());
 
 // Middleware
 app.use(extractUser);
