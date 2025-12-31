@@ -1,6 +1,6 @@
 import { db } from "./db";
 import { ticket, ticketStatusEnum, ticketPriorityEnum } from "./db/schema";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, sql, count } from "drizzle-orm";
 
 export const ticketService = {
   createTicket: async (data: {
@@ -98,5 +98,25 @@ export const ticketService = {
 
   listComments: async (ticketId: string) => {
     return await db.select().from(ticket).where(eq(ticket.id, ticketId)).orderBy(desc(ticket.createdAt));
+  },
+
+  getStatsOverview: async () => {
+    const byStatus = await db
+      .select({
+        status: ticket.status,
+        count: count(),
+      })
+      .from(ticket)
+      .groupBy(ticket.status);
+
+    const byPriority = await db
+      .select({
+        priority: ticket.priority,
+        count: count(),
+      })
+      .from(ticket)
+      .groupBy(ticket.priority);
+
+    return { byStatus, byPriority };
   },
 };

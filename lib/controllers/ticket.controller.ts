@@ -178,4 +178,13 @@ export const ticketController = {
       res.status(500).json({ error: "Failed to list comments" });
     }
   },
+
+  getStatsOverview: async (req: Request, res: Response) => {
+    try {
+      const stats = await ticketService.getStatsOverview();
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get stats overview" });
+    }
+  },
 };

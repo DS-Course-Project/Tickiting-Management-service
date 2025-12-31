@@ -7,6 +7,7 @@ const router = Router();
 // Public / User Routes
 router.post("/", ticketController.createTicket);
 router.get("/", ticketController.listTickets);
+router.get("/stats/overview", ticketController.getStatsOverview);
 router.put("/:id/status", ticketController.changeStatus);
 router.post("/:id/comments", ticketController.addComment);
 router.get("/:id/comments", ticketController.listComments);
