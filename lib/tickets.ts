@@ -1,6 +1,6 @@
 import { db } from "./db/index.js";
 import { ticket, comment, ticketStatusEnum, ticketPriorityEnum } from "./db/schema.js";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, sql, count } from "drizzle-orm";
 import { nanoid } from "nanoid";
 
 export const ticketService = {
@@ -86,5 +86,19 @@ export const ticketService = {
         return await db.select().from(comment)
             .where(eq(comment.ticketId, ticketId))
             .orderBy(desc(comment.createdAt));
+    },
+
+    getStatsOverview: async () => {
+        const byStatus = await db.select({
+            status: ticket.status,
+            count: count(),
+        }).from(ticket).groupBy(ticket.status);
+
+        const byPriority = await db.select({
+            priority: ticket.priority,
+            count: count(),
+        }).from(ticket).groupBy(ticket.priority);
+
+        return { byStatus, byPriority };
     }
 };

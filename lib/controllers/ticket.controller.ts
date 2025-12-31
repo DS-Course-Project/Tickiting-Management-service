@@ -5,7 +5,7 @@ export const ticketController = {
     createTicket: async (req: Request, res: Response) => {
         try {
             const { title, description, priority } = req.body;
-            const userId = req.user?.id; // Get from RBAC middleware
+            const userId = req.user?.id;
 
             if (!userId) {
                 res.status(401).json({ error: "Unauthorized" });
@@ -135,6 +135,15 @@ export const ticketController = {
             res.json(comments);
         } catch (error) {
             res.status(500).json({ error: "Failed to list comments" });
+        }
+    },
+
+    getStatsOverview: async (req: Request, res: Response) => {
+        try {
+            const stats = await ticketService.getStatsOverview();
+            res.json(stats);
+        } catch (error) {
+            res.status(500).json({ error: "Failed to get stats overview" });
         }
     }
 };

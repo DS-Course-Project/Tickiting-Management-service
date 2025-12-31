@@ -7,6 +7,7 @@ const router = Router();
 // Public / User Routes
 router.post("/", ticketController.createTicket);
 router.get("/", ticketController.listTickets);
+router.get("/stats/overview", ticketController.getStatsOverview);
 router.get("/:id", ticketController.getTicket);
 router.patch("/:id", ticketController.updateTicket); // Basic update, could be refined
 router.patch("/:id/status", ticketController.changeStatus);
